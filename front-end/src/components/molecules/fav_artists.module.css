@@ -1,7 +1,7 @@
 .favs {
   margin: 2rem;
-  height: 100%;
-  width: 100%;
+  /* height: 100%; */
+  /* width: 100%; */
 }
 .artists_container {
   display: flex;

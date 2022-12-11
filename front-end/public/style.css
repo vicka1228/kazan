@@ -29,6 +29,7 @@ section,
 body {
   height: 100%;
   width: 100%;
+  overflow-x: hidden;
 }
 
 h1 {
@@ -38,7 +39,7 @@ h1 {
 }
 
 h2 {
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 600;
 }
 

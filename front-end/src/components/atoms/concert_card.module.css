@@ -1,0 +1,33 @@
+.concert {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  width: fit-content;
+  background-color: white;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.05);
+}
+.concert_info {
+  display: flex;
+  padding: 1rem;
+  gap: 1.5rem;
+  flex-direction: row;
+}
+
+.concert img {
+  /* height: 4rem; */
+  width: 20rem;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  object-position: center;
+}
+
+.concert_info div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.concert_info p:first-child {
+  font-weight: 600;
+}
