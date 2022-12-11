@@ -11,4 +11,5 @@ export const routes = [
     path: "/home",
     component: <MainPage />,
   },
+  { path: "/search", component: <MainPage /> },
 ];

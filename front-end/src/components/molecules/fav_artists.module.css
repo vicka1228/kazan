@@ -1,0 +1,20 @@
+.favs {
+  margin: 2rem;
+  height: 100%;
+  width: 100%;
+}
+.artists_container {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 2rem 0;
+  gap: 1rem 2rem;
+}
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top > p {
+  font-weight: 500;
+}

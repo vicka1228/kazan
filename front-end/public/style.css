@@ -14,6 +14,11 @@
   --bckground: white;
   --txtClr: #303f65;
   --lineClr: #eeeeee;
+  --cardClr: #f6f6f6;
+}
+
+#root {
+  display: flex;
 }
 
 button {

@@ -1,9 +1,11 @@
 import React from "react";
-import { Sidebar } from "../components/Sidebar";
+import { FavArtists } from "../components/molecules/FavArtists";
+import { Sidebar } from "../components/molecules/Sidebar";
 export const MainPage = () => {
   return (
     <>
       <Sidebar />
+      <FavArtists />
     </>
   );
 };
