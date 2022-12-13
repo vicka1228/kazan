@@ -16,12 +16,12 @@ SPOTIFY_CLIENT_SECRET = "51dee21966eb485eae0ee1320f731dba"
 SCOPE = "user-top-read"
 REDIRECT_URI = "http://localhost:8888/callback/"
 # user log in – won't work from .ipynb, download as .py and run
-token = util.prompt_for_user_token(scope=SCOPE,client_id=SPOTIFY_CLIENT_ID,client_secret=SPOTIFY_CLIENT_SECRET, redirect_uri=REDIRECT_URI)
+# token = util.prompt_for_user_token(scope=SCOPE,client_id=SPOTIFY_CLIENT_ID,client_secret=SPOTIFY_CLIENT_SECRET, redirect_uri=REDIRECT_URI)
 # print(token)
 
 city_populations = {'México': 8855000}
 
-# gets top 100 artists by webscraping billboard
+# gets top 100 artists by webscraping 
 def getTop100Artists():
     url = 'https://kworb.net/spotify/listeners.html'
     resp = requests.get(url)
@@ -47,12 +47,6 @@ def getPopulation(city):
 # gives artist rating
 def getPopularity(artist):
     urlartist = artist.replace(" ", "%20")
-    # body = {"grant_type": "client_credentials"}
-    # tokenURL = "https://accounts.spotify.com/api/token"
-    
-    # token = requests.post(tokenURL, data=body, auth=(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET))
-    # tokenJSON = token.json()
-
     header = {"Authorization": "Bearer " + token}
     searchURL = "https://api.spotify.com/v1/search?q={}&type=artist".format(urlartist)
     artist_rating = -1
@@ -72,7 +66,6 @@ def getEventsData(artist):
     events = {}
 
     if jsonresponse.get(u'_embedded')==None:
-        # print(artist + " has no shows!")
         return events
 
     # iterate over length of embedded events
@@ -135,7 +128,7 @@ def getEventsData(artist):
     return events
 
 # returns user's top N artists
-def getTopNArtists(N):
+def getTopNArtists(N, token):
     if token:
         sp = spotipy.Spotify(auth=token)
         top_artists = sp.current_user_top_artists(limit=N, time_range="medium_term")
@@ -152,19 +145,18 @@ def getTopNArtists(N):
 artists = getTop100Artists()
 
 masterlist={}
-# for i in range(0, len(artists)):
-for i in range(500, 1000):
+for i in range(0, len(artists)):
+# for i in range(500, 1000):
     try:
         print(artists[i])
         dict = getEventsData(artists[i])
         masterlist.update(dict)
     except requests.Timeout as err:
-        print('SKIPPED TIMEOUT: ' + artists[i])
+        print('SKIPPED due to TIMEOUT: ' + artists[i])
         continue
     except requests.RequestException as err:
         print(err)
         continue
-
 
 df = pd.DataFrame.from_dict(masterlist)
 df = df.transpose()
