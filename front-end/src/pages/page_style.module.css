@@ -97,15 +97,15 @@
 }
 
 .search input {
-  height: 2rem;
-  width: 15rem;
+  height: 2.5rem;
+  width: 20rem;
   border-radius: 4rem;
   padding: 1rem;
   padding-left: 2.25rem;
 }
 
 .search input:focus {
-  border: none;
+  outline: none;
 }
 
 .search svg {
