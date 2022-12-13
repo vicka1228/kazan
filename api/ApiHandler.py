@@ -20,19 +20,21 @@ DATABASE = 'DATABASE'
 
 conn = sqlite3.connect(DATABASE, check_same_thread=False)
 
+
 def save_to_DF(csv_file):
-  return pd.read_csv(csv_file)
+    return pd.read_csv(csv_file)
 
 
 def save_to_SQL(df):
-  c = conn.cursor()
-  c.execute('CREATE TABLE IF NOT EXISTS ' + TABLE + ' (artist_name text, min_price number)')
-  conn.commit()
-  df.to_sql(TABLE, conn, if_exists = 'replace', index = False)
+    c = conn.cursor()
+    c.execute('CREATE TABLE IF NOT EXISTS ' + TABLE +
+              ' (artist_name text, min_price number)')
+    conn.commit()
+    df.to_sql(TABLE, conn, if_exists='replace', index=False)
+
 
 df = save_to_DF('./data.csv')
 save_to_SQL(df)
-
 
 
 # SPOTIFY API CONNECT & USER LOGIN
@@ -41,7 +43,8 @@ SPOTIFY_CLIENT_SECRET = "51dee21966eb485eae0ee1320f731dba"
 SCOPE = "user-top-read"
 REDIRECT_URI = "http://localhost:8888/callback/"
 # user log in – won't work from .ipynb, download as .py and run
-token = util.prompt_for_user_token(scope=SCOPE,client_id=SPOTIFY_CLIENT_ID,client_secret=SPOTIFY_CLIENT_SECRET, redirect_uri=REDIRECT_URI)
+token = util.prompt_for_user_token(scope=SCOPE, client_id=SPOTIFY_CLIENT_ID,
+                                   client_secret=SPOTIFY_CLIENT_SECRET, redirect_uri=REDIRECT_URI)
 # print(token)
 
 
@@ -99,7 +102,7 @@ class ConcertListHandler(Resource):
     def get(self):
         print("I am reaching the request")
         concerts = pd.read_sql_query(
-            "SELECT * FROM " + TABLE, conn).to_json(orient = "records")
+            "SELECT * FROM " + TABLE, conn).to_json(orient="records")
         return {
             'resultStatus': 'SUCCESS',
             'message': "Concert List Handler",
@@ -134,7 +137,7 @@ class ConcertInformationHandler(Resource):
 
         if id:
             concert_info = pd.read_sql_query(
-                "SELECT * FROM " + TABLE + " WHERE id = '" + id + "'", conn).to_json(orient = "records")
+                "SELECT * FROM " + TABLE + " WHERE id = '" + id + "'", conn).to_json(orient="records")
 
         return {
             'resultStatus': 'SUCCESS',
@@ -161,7 +164,7 @@ class SearchHandler(Resource):
                 col = pd.read_sql_query(
                     "SELECT * FROM " + TABLE + " WHERE " + column_name + " LIKE '%" + search_string + "%'", conn)
                 if not col.empty:
-                    ans = col.to_json(orient = "records")
+                    ans = col.to_json(orient="records")
 
         return {
             'resultStatus': 'SUCCESS',
@@ -185,7 +188,7 @@ class ConcertsOfArtistHandler(Resource):
 
         if artist:
             concerts = pd.read_sql_query(
-                "SELECT * FROM " + TABLE + " WHERE artist = '" + artist + "'", conn).to_json(orient = "records")
+                "SELECT * FROM " + TABLE + " WHERE artist = '" + artist + "'", conn).to_json(orient="records")
 
         return {
             'resultStatus': 'SUCCESS',
@@ -207,27 +210,27 @@ class ArtistImageHandler(Resource):
         # note, the post req from frontend needs to match the strings here (e.g. 'type and 'message')
 
         artist = args['artist']
-        imageURL=""
+        imageURL = ""
 
         if artist:
             urlartist = artist.replace(" ", "%20")
 
             header = {"Authorization": "Bearer " + token}
-            searchURL = "https://api.spotify.com/v1/search?q={}&type=artist".format(urlartist)
-            
-            try: 
+            searchURL = "https://api.spotify.com/v1/search?q={}&type=artist".format(
+                urlartist)
+
+            try:
                 resp = requests.get(searchURL, headers=header)
                 artist_details = resp.json()
                 imageURL = artist_details['artists']['items'][0]['images'][0]['url']
             except TimeoutError:
                 print('TimeoutError')
-        
+
         return {
             'resultStatus': 'SUCCESS',
             'message': "Artist Image Handler",
             'imageURL': imageURL
         }
-
 
 
 CLI_ID = "a506022be18046b9a48be947eb75efb7"
@@ -242,5 +245,3 @@ SCOPE = 'playlist-modify-private,playlist-modify-public,user-top-read'
 
 # Set this to True for testing but you probaly want it set to False in production.
 SHOW_DIALOG = True
-
-

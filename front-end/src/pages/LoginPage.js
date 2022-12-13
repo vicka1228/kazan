@@ -35,7 +35,7 @@ export const LoginPage = () => {
         <Divider />
         <Button
           text={"Login with Spotify"}
-          link={"http://127.0.0.1:5000/login"}
+          link={"http://127.0.0.1:8080/login"}
         />
         <div
           style={{
