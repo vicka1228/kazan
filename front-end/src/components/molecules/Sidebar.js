@@ -2,15 +2,14 @@ import React from "react";
 import styles from "./sidebar.module.css";
 import home from "../../images/home.svg";
 import search from "../../images/search.svg";
-import library from "../../images/library.svg";
+
 import { Link, useLocation } from "react-router-dom";
 export const Sidebar = () => {
   const loc = useLocation();
-  const given = loc.pathname === "/home" ? 0 : 1;
+  const given = loc.pathname === "/search" ? 1 : 0;
   const nav = [
     { name: "Home", src: home, path: "/home" },
     { name: "Search", src: search, path: "/search" },
-    { name: "Your library", src: library, path: "/library" },
   ];
   return (
     <aside className={styles.sidebar}>

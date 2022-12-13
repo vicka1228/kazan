@@ -10,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 export const MainPage = () => {
   const [cookies, setCookie] = useCookies();
   const navigate = useNavigate();
-  console.log(cookies.token);
   const data = {
     token: cookies.token,
     expires_at: parseInt(cookies.expires_at),
