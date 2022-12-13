@@ -16,7 +16,7 @@ SPOTIFY_CLIENT_SECRET = "51dee21966eb485eae0ee1320f731dba"
 SCOPE = "user-top-read"
 REDIRECT_URI = "http://localhost:8888/callback/"
 # user log in – won't work from .ipynb, download as .py and run
-# token = util.prompt_for_user_token(scope=SCOPE,client_id=SPOTIFY_CLIENT_ID,client_secret=SPOTIFY_CLIENT_SECRET, redirect_uri=REDIRECT_URI)
+token = util.prompt_for_user_token(scope=SCOPE,client_id=SPOTIFY_CLIENT_ID,client_secret=SPOTIFY_CLIENT_SECRET, redirect_uri=REDIRECT_URI)
 # print(token)
 
 city_populations = {'México': 8855000}
@@ -142,24 +142,24 @@ def getTopNArtists(N, token):
     return artists
 
 # artists = getTopNArtists(10)
-artists = getTop100Artists()
+# artists = getTop100Artists()
 
-masterlist={}
-for i in range(0, len(artists)):
-# for i in range(500, 1000):
-    try:
-        print(artists[i])
-        dict = getEventsData(artists[i])
-        masterlist.update(dict)
-    except requests.Timeout as err:
-        print('SKIPPED due to TIMEOUT: ' + artists[i])
-        continue
-    except requests.RequestException as err:
-        print(err)
-        continue
+# masterlist={}
+# for i in range(0, len(artists)):
+# # for i in range(500, 1000):
+#     try:
+#         print(artists[i])
+#         dict = getEventsData(artists[i])
+#         masterlist.update(dict)
+#     except requests.Timeout as err:
+#         print('SKIPPED due to TIMEOUT: ' + artists[i])
+#         continue
+#     except requests.RequestException as err:
+#         print(err)
+#         continue
 
-df = pd.DataFrame.from_dict(masterlist)
-df = df.transpose()
-df.reset_index(inplace = True, drop = True)
+# df = pd.DataFrame.from_dict(masterlist)
+# df = df.transpose()
+# df.reset_index(inplace = True, drop = True)
 
-df.to_csv('popdata2.csv', encoding='utf-8')
+# df.to_csv('popdata2.csv', encoding='utf-8')
