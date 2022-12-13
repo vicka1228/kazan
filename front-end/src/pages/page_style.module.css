@@ -85,6 +85,12 @@
 
 .concert_info {
   margin: 2rem;
+  display: flex;
+  gap: 2rem;
+}
+
+.concert_info div:first-child{
+  width: 60%;
 }
 
 .concert_info h2 {
