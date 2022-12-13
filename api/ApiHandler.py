@@ -187,14 +187,28 @@ class ConcertsOfArtistHandler(Resource):
         artist = args['artist']
 
         if artist:
-            concerts = pd.read_sql_query(
-                "SELECT * FROM " + TABLE + " WHERE artist = '" + artist + "'", conn).to_json(orient="records")
+            # concerts = pd.read_sql_query(
+            #     "SELECT * FROM " + TABLE + " WHERE artist = '" + artist + "'", conn).to_json(orient = "records")
+            link = 'https://app.ticketmaster.com/discovery/v2/events.json?size=20&keyword=' + artist + '&sort=relevance,desc&apikey=sPYngrqc3a29GkMAd2SOBDuPm7VdHT9o'
+            jsonresponse = requests.get(link).json()
+            events = []
+
+            for i in range(0, len(jsonresponse['_embedded']['events'])):
+                print(i)
+                event   = jsonresponse['_embedded']['events'][i]
+                show    = getConcertData(event['id'])
+                if (not "name" in show):
+                    continue
+                events.append(show)    
+            
+            concerts = events.to_json()
 
         return {
             'resultStatus': 'SUCCESS',
             'message': "Concerts of Artist Handler",
             'concerts': concerts
         }
+
 
 
 class ArtistImageHandler(Resource):
