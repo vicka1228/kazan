@@ -25,6 +25,7 @@ from sqlalchemy import create_engine
 # Machine Learning Libraries
 from sklearn.ensemble import BaggingRegressor
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
 
 
 # spotify configuration details
@@ -65,12 +66,12 @@ def clean_dataframe(df):
   df.reset_index(inplace = True, drop = True)
   df["pop"].astype(int)
 
-clean_dataframe(pd.read_csv("data.csv"))
+# clean_dataframe(pd.read_csv("data.csv"))
 
 def save_to_CSV(df):
   df.to_csv('data2.csv')
 
-save_to_CSV(df)
+# save_to_CSV(df)
 
 '''
 Saving the dataframe into the SQL
@@ -84,7 +85,7 @@ def save_to_SQL(df):
   conn.commit()
   df.to_sql(TABLE, conn, if_exists = 'replace', index = False)
 
-save_to_SQL(df)
+# save_to_SQL(df)
 
 '''
 Fetching dataframe from SQL
@@ -99,6 +100,9 @@ df = get_df_from_SQL()
 Predicting price using Random Forest with bagging
 '''
 
+oneh = OneHotEncoder(handle_unknown="ignore")
+oneh.fit(df[['month', 'genre', 'artist', 'venue']])
+
 def mean_average_error(y_true, predictions):
     y_true, predictions = np.array(y_true), np.array(predictions)
     return np.mean(np.abs(y_true - predictions))
@@ -110,7 +114,7 @@ def get_data(df):
   X = df[['weekend', 'score', 'month', 'pop', 'genre', 'artist', 'venue']]
 
   # encode categorical data
-  X = pd.get_dummies(X, columns = ['month', 'genre', 'artist', 'venue'], drop_first=True)
+  X = oneh.transform(X[['month', 'genre', 'artist', 'venue']])
 
   # create target variable 
   y = df['minprice']
@@ -154,7 +158,7 @@ def predict(model, X_test, y_test):
 # for _ in range(1):
 X_train, X_test, y_train, y_test = split(df)
 model = train_model(X_train, y_train)
-predict(model, X_test, y_test)
+# predict(model, X_test, y_test)
 
 '''
 APIs for the frontend

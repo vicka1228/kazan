@@ -1,6 +1,7 @@
 .concert_page {
   width: 100%;
   margin-left: 20rem;
+  overflow-x: hidden;
 }
 
 .concert_page img {
@@ -8,4 +9,108 @@
   object-position: bottom;
   height: 15rem;
   aspect-ratio: 5/ 1;
+}
+
+.artist_page {
+  width: 100%;
+  margin-left: 20rem;
+  overflow-x: hidden;
+}
+
+.artist_banner img {
+  object-fit: cover;
+  object-position: bottom;
+  height: 15rem;
+  aspect-ratio: 5/ 1;
+  /* width: 100%; */
+}
+
+.artist_banner {
+  position: relative;
+}
+
+.artist_banner p {
+  position: absolute;
+  bottom: 2rem;
+  font-size: 2rem;
+  font-weight: 600;
+  left: 2rem;
+  color: white;
+  background: blur(0.1rem);
+}
+
+.artist_banner img {
+  filter: blur(0.25rem) brightness(0.7);
+  /* transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1); */
+}
+
+/* .container {
+} */
+
+.artist_concerts {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 2rem;
+  gap: 1rem 2rem;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.concert_banner {
+  position: relative;
+}
+
+.concert_banner img {
+  filter: blur(0.25rem) brightness(0.7);
+}
+
+.concert_banner div {
+  position: absolute;
+  bottom: 2rem;
+  font-size: 2rem;
+  font-weight: 600;
+  left: 2rem;
+  color: white;
+  background: blur(0.1rem);
+}
+
+.concert_banner p {
+  margin: 0.5rem;
+  color: white;
+}
+
+.concert_banner p:last-child {
+  font-size: 1rem;
+}
+
+.concert_info {
+  margin: 2rem;
+}
+
+.concert_info h2 {
+  margin-bottom: 1rem;
+}
+
+.search {
+  margin: 2rem;
+  position: relative;
+}
+
+.search input {
+  height: 2.5rem;
+  width: 20rem;
+  border-radius: 4rem;
+  padding: 1rem;
+  padding-left: 2.25rem;
+}
+
+.search input:focus {
+  outline: none;
+}
+
+.search svg {
+  position: absolute;
+  height: 1rem;
+  left: 1rem;
+  top: 0.675rem;
 }

@@ -56,9 +56,9 @@ function App() {
   // //Concert Info API
 
   // const [getConcertInfo, setGetConcertInfo] = useState({});
-  // let venue = ""; //have to accept from user
+  // let id = ""; //have to accept from user
   // let req = {
-  //   venue: venue,
+  //   'id': id
   // };
   // useEffect(() => {
   //   axios
@@ -77,7 +77,7 @@ function App() {
   // const [getSearchResult, setGetSearchResult] = useState({});
   // let searchString = ""; //have to accept from user
   // req = {
-  //   "search-string": searchString,
+  //   "search-string": searchString
   // };
   // useEffect(() => {
   //   axios
@@ -96,7 +96,7 @@ function App() {
   // const [getConcertsOfArtist, setGetConcertsofArtist] = useState({});
   // let artist = ""; //have to accept from user
   // req = {
-  //   artist: artist,
+  //   'artist': artist
   // };
   // useEffect(() => {
   //   axios
@@ -115,7 +115,7 @@ function App() {
   // const [getImageOfArtist, setGetImageofArtist] = useState({});
   // let artist = ""; //have to accept from user
   // req = {
-  //   artist: artist,
+  //   'artist': artist
   // };
   // useEffect(() => {
   //   axios
@@ -123,6 +123,25 @@ function App() {
   //     .then((response) => {
   //       console.log("SUCCESS", response);
   //       setGetImageofArtist(response);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }, []);
+
+  // //Image of Concert API
+
+  // const [getImageOfConcert, setGetImageofConcert] = useState({});
+  // let id = ""; //have to accept from user
+  // req = {
+  //   'id': id
+  // };
+  // useEffect(() => {
+  //   axios
+  //     .post("http://127.0.0.1:5000/flask/concertimage", req)
+  //     .then((response) => {
+  //       console.log("SUCCESS", response);
+  //       setGetImageofConcert(response);
   //     })
   //     .catch((error) => {
   //       console.log(error);
