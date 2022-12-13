@@ -33,19 +33,25 @@ export const LoginPage = () => {
           ></img>
         </p>
         <Divider />
-        <Button text={"Login with Spotify"} link={'/home'} />
+        <Button
+          text={"Login with Spotify"}
+          link={"http://127.0.0.1:5000/login"}
+        />
         <div
           style={{
             position: "absolute",
             bottom: "10%",
             width: "20rem",
-            height: "auto"
+            height: "auto",
           }}
         >
           <Divider />
-          <p style={{
-            fontSize: "0.75rem",
-          }} align = "center">
+          <p
+            style={{
+              fontSize: "0.75rem",
+            }}
+            align="center"
+          >
             This app connects to Spotify API via OAuth 2.0. Your top artists
             list is one of the data you can access once authenticated.
           </p>
