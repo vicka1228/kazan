@@ -280,6 +280,30 @@ class ArtistImageHandler(Resource):
             'imageURL': imageURL
         }
 
+class ConcertImageHandler(Resource):
+    def post(self):
+        print(self)
+        parser = reqparse.RequestParser()
+        parser.add_argument('id', type=str)
+
+        args = parser.parse_args()
+
+        print(args)
+        # note, the post req from frontend needs to match the strings here (e.g. 'type and 'message')
+
+        id = args['id']
+
+        if id:
+            # concert_info = pd.read_sql_query(
+            #     "SELECT * FROM " + TABLE + " WHERE id = '" + id + "'", conn).to_json(orient="records")
+            imageURL = getConcertData(id)['img']
+
+        return {
+            'resultStatus': 'SUCCESS',
+            'message': "Concert Information Handler",
+            'imageURL': imageURL
+        }
+
 
 CLI_ID = "a506022be18046b9a48be947eb75efb7"
 CLI_SEC = "46f709ffe6d9434482efe31d30098684"
