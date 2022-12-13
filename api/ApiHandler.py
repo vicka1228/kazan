@@ -19,18 +19,18 @@ DATABASE = 'DATABASE'
 
 conn = sqlite3.connect(DATABASE, check_same_thread=False)
 
-# def save_to_DF(csv_file):
-#   return pd.read_csv(csv_file)
+def save_to_DF(csv_file):
+  return pd.read_csv(csv_file)
 
 
-# def save_to_SQL(df):
-#   c = conn.cursor()
-#   c.execute('CREATE TABLE IF NOT EXISTS ' + TABLE + ' (artist_name text, min_price number)')
-#   conn.commit()
-#   df.to_sql(TABLE, conn, if_exists = 'replace', index = False)
+def save_to_SQL(df):
+  c = conn.cursor()
+  c.execute('CREATE TABLE IF NOT EXISTS ' + TABLE + ' (artist_name text, min_price number)')
+  conn.commit()
+  df.to_sql(TABLE, conn, if_exists = 'replace', index = False)
 
-# df = save_to_DF('./data.csv')
-# save_to_SQL(df)
+df = save_to_DF('./data.csv')
+save_to_SQL(df)
 
 class HelloApiHandler(Resource):
     def get(self):
@@ -70,23 +70,23 @@ class HelloApiHandler(Resource):
 
 class ConcertListHandler(Resource):
 
-    def save_to_DF(csv_file):
-        return pd.read_csv(csv_file)
+    # def save_to_DF(csv_file):
+    #     return pd.read_csv(csv_file)
 
-    def save_to_SQL(df):
-        c = conn.cursor()
-        c.execute('CREATE TABLE IF NOT EXISTS ' + TABLE +
-                  ' (artist_name text, min_price number)')
-        conn.commit()
-        df.to_sql(TABLE, conn, if_exists='replace', index=False)
+    # def save_to_SQL(df):
+    #     c = conn.cursor()
+    #     c.execute('CREATE TABLE IF NOT EXISTS ' + TABLE +
+    #               ' (artist_name text, min_price number)')
+    #     conn.commit()
+    #     df.to_sql(TABLE, conn, if_exists='replace', index=False)
 
-    df = save_to_DF('./data.csv')
-    save_to_SQL(df)
+    # df = save_to_DF('./data.csv')
+    # save_to_SQL(df)
 
     def get(self):
         print("I am reaching the request")
-        concerts = json.dumps((pd.read_sql_query(
-            "SELECT venue FROM " + TABLE, conn).venue.unique()).tolist())
+        concerts = pd.read_sql_query(
+            "SELECT * FROM " + TABLE, conn).to_json(orient = "records")
         return {
             'resultStatus': 'SUCCESS',
             'message': "Concert List Handler",
@@ -110,18 +110,18 @@ class ConcertInformationHandler(Resource):
     def post(self):
         print(self)
         parser = reqparse.RequestParser()
-        parser.add_argument('venue', type=str)
+        parser.add_argument('id', type=str)
 
         args = parser.parse_args()
 
         print(args)
         # note, the post req from frontend needs to match the strings here (e.g. 'type and 'message')
 
-        venue = args['venue']
+        id = args['id']
 
-        if venue:
+        if id:
             concert_info = pd.read_sql_query(
-                "SELECT * FROM " + TABLE + " WHERE venue = '" + venue + "'", conn).to_json()
+                "SELECT * FROM " + TABLE + " WHERE id = '" + id + "'", conn).to_json(orient = "records")
 
         return {
             'resultStatus': 'SUCCESS',
@@ -148,7 +148,7 @@ class SearchHandler(Resource):
                 col = pd.read_sql_query(
                     "SELECT * FROM " + TABLE + " WHERE " + column_name + " LIKE '%" + search_string + "%'", conn)
                 if not col.empty:
-                    ans = col.to_json()
+                    ans = col.to_json(orient = "records")
 
         return {
             'resultStatus': 'SUCCESS',
@@ -172,7 +172,7 @@ class ConcertsOfArtistHandler(Resource):
 
         if artist:
             concerts = pd.read_sql_query(
-                "SELECT * FROM " + TABLE + " WHERE artist = '" + artist + "'", conn).to_json()
+                "SELECT * FROM " + TABLE + " WHERE artist = '" + artist + "'", conn).to_json(orient = "records")
 
         return {
             'resultStatus': 'SUCCESS',
