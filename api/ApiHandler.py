@@ -7,6 +7,11 @@ import json
 import pandas as pd
 import requests
 
+
+# Nothing wrong with:
+
+from backend.concertData import MLDataPoints
+
 # Spotify login and fetch data
 import spotipy
 import spotipy.util as util
@@ -360,7 +365,7 @@ class PredictionResult(Resource):
         print(args)
         # note, the post req from frontend needs to match the strings here (e.g. 'type and 'message')
 
-        params = get_params_list(args)
+        params = MLDataPoints(args)
 
         df = pd.DataFrame(params).T
         df.columns = ['weekend', 'score', 'month', 'pop', 'genre', 'artist', 'venue', 'minprice']
