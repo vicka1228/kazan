@@ -47,6 +47,39 @@ token = util.prompt_for_user_token(scope=SCOPE, client_id=SPOTIFY_CLIENT_ID,
                                    client_secret=SPOTIFY_CLIENT_SECRET, redirect_uri=REDIRECT_URI)
 # print(token)
 
+def getConcertData(eventId):
+        apikey = '0oiXuNOurAs4uGkbcByIC8bWWRZ8DhbN'
+        url = 'https://app.ticketmaster.com/discovery/v2/events/{}?apikey={}'.format(eventId, apikey)
+        jsonresponse = requests.get(url).json()
+
+        show = {}
+
+        if not '_embedded' in jsonresponse:
+            return show
+        
+        img         = jsonresponse['images'][0]['url']
+        name        = jsonresponse['name']
+        date        = jsonresponse['dates']['start']['localDate']
+        # time        = jsonresponse['dates']['start']['time']
+        genre       = jsonresponse['classifications'][0]['genre']['name']
+        priceMin    = jsonresponse['priceRanges'][0]['min']
+        priceMax    = jsonresponse['priceRanges'][0]['max']
+        venue       = jsonresponse['_embedded']['venues'][0]['name']
+        city        = jsonresponse['_embedded']['venues'][0]['city']['name']
+        country     = jsonresponse['_embedded']['venues'][0]['country']['name']
+
+        show.update({'img': img})
+        show.update({'name': name})
+        show.update({'date': date})
+        # show.update({'time': time})
+        show.update({'genre': genre})
+        show.update({'priceMin': priceMin})
+        show.update({'priceMax': priceMax})
+        show.update({'venue': venue})
+        show.update({'city': city})
+        show.update({'country': country})
+
+        return show
 
 class HelloApiHandler(Resource):
     def get(self):
@@ -136,8 +169,9 @@ class ConcertInformationHandler(Resource):
         id = args['id']
 
         if id:
-            concert_info = pd.read_sql_query(
-                "SELECT * FROM " + TABLE + " WHERE id = '" + id + "'", conn).to_json(orient="records")
+            # concert_info = pd.read_sql_query(
+            #     "SELECT * FROM " + TABLE + " WHERE id = '" + id + "'", conn).to_json(orient="records")
+            concert_info = getConcertData(id)
 
         return {
             'resultStatus': 'SUCCESS',
