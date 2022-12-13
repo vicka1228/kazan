@@ -94,5 +94,8 @@ def MLDataPoints(eventId):
     city    = jsonresponse['_embedded']['venues'][0]['city']['name']
     pop     = getPopulation(city)
     genre   = jsonresponse['_embedded']['attractions'][0]['classifications'][0]['genre']['name']
+    priceMin    = jsonresponse['priceRanges'][0]['min']
 
-    return [weekend, score, month, pop, genre, artist, venue]
+    return [weekend, score, month, pop, genre, artist, venue, priceMin]
+
+print(MLDataPoints('G5v8Z9pBt_3TE'))
