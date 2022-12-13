@@ -20,8 +20,8 @@ def serve(path):
     return send_from_directory(app.static_folder, 'index.html')
 
 
-CLI_ID = "a506022be18046b9a48be947eb75efb7"
-CLI_SEC = "46f709ffe6d9434482efe31d30098684"
+CLI_ID = "94430036b951441cba71a7fde5ad0294"
+CLI_SEC = "8118d21f47fc4b8abfacc9c2d0954510"
 
 API_BASE = 'https://accounts.spotify.com'
 
@@ -65,49 +65,26 @@ def api_callback():
     return res
 
 
-@app.route("/go", methods=['POST'])
-def go():
-    token_info = request.json
-    session['token_info'], authorized = get_token(token_info)
-    print(session)
-    session.modified = True
-    if not authorized:
-        return {'redirect': True}
-    data = request.form
-    sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
-    response = sp.current_user_top_tracks(
-        limit=data['num_tracks'], time_range=data['time_range'])
+# @app.route("/go", methods=['POST'])
+# def go():
+#     token_info = request.json
+#     session['token_info'], authorized = get_token(token_info)
+#     print(session)
+#     session.modified = True
+#     if not authorized:
+#         return {'redirect': True}
+#     data = request.form
+#     sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
+#     response = sp.current_user_top_tracks(
+#         limit=data['num_tracks'], time_range=data['time_range'])
 
-    print(json.dumps(response))
+#     print(json.dumps(response))
 
-    return {"a": "data"}
+#     return {"a": "data"}
 
-# Checks to see if token is valid and gets a new token if not
+# # Checks to see if token is valid and gets a new token if not
 
 
-def get_token(session):
-    token_valid = False
-    token_info = session
-
-    # Checking if the session already has a token stored
-    # if not (session.get('token_info', False)):
-    #     token_valid = False
-    #     return token_info, token_valid
-
-    # Checking if token has expired
-    now = int(time.time())
-    is_token_expired = session['expires_at'] - now < 60
-
-    # Refreshing token if it has expired
-    if (is_token_expired):
-        # Don't reuse a SpotifyOAuth object because they store token info and you could leak user tokens if you reuse a SpotifyOAuth object
-        sp_oauth = spotipy.oauth2.SpotifyOAuth(
-            client_id=CLI_ID, client_secret=CLI_SEC, redirect_uri=REDIRECT_URI, scope=SCOPE)
-        token_info = sp_oauth.refresh_access_token(
-            session['refresh_token'])
-
-    token_valid = True
-    return token_info, token_valid
 
 
 api.add_resource(HelloApiHandler, '/flask/hello')
