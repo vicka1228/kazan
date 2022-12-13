@@ -5,6 +5,7 @@ import sqlite3
 from flask_restful import Api, Resource, reqparse
 import json
 import pandas as pd
+import requests
 
 # Spotify login and fetch data
 import spotipy
@@ -31,6 +32,18 @@ def save_to_SQL(df):
 
 df = save_to_DF('./data.csv')
 save_to_SQL(df)
+
+
+
+# SPOTIFY API CONNECT & USER LOGIN
+SPOTIFY_CLIENT_ID = "d4c88e10069d4bf789bf0d70cb71114a"
+SPOTIFY_CLIENT_SECRET = "51dee21966eb485eae0ee1320f731dba"
+SCOPE = "user-top-read"
+REDIRECT_URI = "http://localhost:8888/callback/"
+# user log in – won't work from .ipynb, download as .py and run
+token = util.prompt_for_user_token(scope=SCOPE,client_id=SPOTIFY_CLIENT_ID,client_secret=SPOTIFY_CLIENT_SECRET, redirect_uri=REDIRECT_URI)
+# print(token)
+
 
 class HelloApiHandler(Resource):
     def get(self):
@@ -176,9 +189,45 @@ class ConcertsOfArtistHandler(Resource):
 
         return {
             'resultStatus': 'SUCCESS',
-            'message': "Search Handler",
+            'message': "Concerts of Artist Handler",
             'concerts': concerts
         }
+
+
+class ArtistImageHandler(Resource):
+
+    def post(self):
+        print(self)
+        parser = reqparse.RequestParser()
+        parser.add_argument('artist', type=str)
+
+        args = parser.parse_args()
+
+        print(args)
+        # note, the post req from frontend needs to match the strings here (e.g. 'type and 'message')
+
+        artist = args['artist']
+        imageURL=""
+
+        if artist:
+            urlartist = artist.replace(" ", "%20")
+
+            header = {"Authorization": "Bearer " + token}
+            searchURL = "https://api.spotify.com/v1/search?q={}&type=artist".format(urlartist)
+            
+            try: 
+                resp = requests.get(searchURL, headers=header)
+                artist_details = resp.json()
+                imageURL = artist_details['artists']['items'][0]['images'][0]['url']
+            except TimeoutError:
+                print('TimeoutError')
+        
+        return {
+            'resultStatus': 'SUCCESS',
+            'message': "Artist Image Handler",
+            'imageURL': imageURL
+        }
+
 
 
 CLI_ID = "a506022be18046b9a48be947eb75efb7"

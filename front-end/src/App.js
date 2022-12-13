@@ -110,6 +110,25 @@ function App() {
   //     });
   // }, []);
 
+  // //Image of Artist API
+
+  // const [getImageOfArtist, setGetImageofArtist] = useState({});
+  // let artist = ""; //have to accept from user
+  // req = {
+  //   artist: artist,
+  // };
+  // useEffect(() => {
+  //   axios
+  //     .post("http://127.0.0.1:5000/flask/artistimage", req)
+  //     .then((response) => {
+  //       console.log("SUCCESS", response);
+  //       setGetImageofArtist(response);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }, []);
+
   return (
       <BrowserRouter>
         <Routes>
