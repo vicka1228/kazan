@@ -12,6 +12,11 @@ import spotipy
 import spotipy.util as util
 from spotipy.oauth2 import SpotifyOAuth
 
+# Machine Learning
+from sklearn.ensemble import BaggingRegressor
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+
 
 # SQL Database
 
@@ -35,6 +40,46 @@ def save_to_SQL(df):
 
 df = save_to_DF('./data.csv')
 save_to_SQL(df)
+
+
+oneh = OneHotEncoder(handle_unknown="ignore")
+oneh.fit(df[['month', 'genre', 'artist', 'venue']])
+
+
+# returns X and y used for ML
+def get_data(df):
+  
+  # select features from the dataset
+  X = df[['weekend', 'score', 'month', 'pop', 'genre', 'artist', 'venue']]
+
+  # encode categorical data
+  X = oneh.transform(X[['month', 'genre', 'artist', 'venue']])
+
+  # create target variable 
+  y = df['minprice']
+
+  # convert type to integer
+  y = y.astype('int')
+  return (X, y)
+
+# split dataframe into train and test
+def split(df):
+  return train_test_split(*get_data(df), test_size = 0.2, random_state = 0)
+          
+# predict the min price using Random Forest with bagging
+def train_model(X_train, y_train):
+
+  # create model with the most optimal number of estimators
+  model = BaggingRegressor(n_estimators = 500)
+
+  # train the model
+  model.fit(X_train, y_train)
+  
+  return model
+
+X_train, X_test, y_train, y_test = split(df)
+model = train_model(X_train, y_train)
+
 
 
 # SPOTIFY API CONNECT & USER LOGIN
@@ -302,6 +347,40 @@ class ConcertImageHandler(Resource):
             'resultStatus': 'SUCCESS',
             'message': "Concert Information Handler",
             'imageURL': imageURL
+        }
+
+class PredictionResult(Resource):
+    def post(self):
+        print(self)
+        parser = reqparse.RequestParser()
+        parser.add_argument('id', type=str)
+
+        args = parser.parse_args()
+
+        print(args)
+        # note, the post req from frontend needs to match the strings here (e.g. 'type and 'message')
+
+        params = get_params_list(args)
+
+        df = pd.DataFrame(params).T
+        df.columns = ['weekend', 'score', 'month', 'pop', 'genre', 'artist', 'venue', 'minprice']
+
+        curr_price = df['minprice']
+        X = df.drop(['minprice'], axis=1)
+        
+        X = oneh.transform(X[['month', 'genre', 'artist', 'venue']])
+        
+        pred_price = model.predict(X)
+
+        if round(pred_price[0], 2) >= curr_price[0]:
+            decision = 'BUY. The current price is ' + str(round(pred_price[0], 2) - curr_price[0]) + ' lower than our predicted minimum price. BINGO!'
+        else:
+            decision = 'WAIT! The current price is ' + str(curr_price[0] - round(pred_price[0], 2)) + ' bigger than our predicted price.'
+
+        return {
+            'resultStatus': 'SUCCESS',
+            'message': "Decision",
+            'concerts': decision
         }
 
 
