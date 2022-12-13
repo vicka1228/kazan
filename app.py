@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, redirect, session, request
+from flask import Flask, send_from_directory, redirect, session, request, make_response
 import spotipy.util as util
 import spotipy
 import requests
@@ -18,14 +18,6 @@ api = Api(app)
 @app.route("/", defaults={'path': ''})
 def serve(path):
     return send_from_directory(app.static_folder, 'index.html')
-
-
-api.add_resource(HelloApiHandler, '/flask/hello')
-api.add_resource(ConcertListHandler, '/flask/concerts')
-api.add_resource(ArtistListHandler, '/flask/artists')
-api.add_resource(ConcertInformationHandler, '/flask/concertinfo')
-api.add_resource(SearchHandler, '/flask/search')
-api.add_resource(ConcertsOfArtistHandler, '/flask/artistconcerts')
 
 
 CLI_ID = "a506022be18046b9a48be947eb75efb7"
@@ -63,35 +55,35 @@ def api_callback():
 
     # Saving the access token along with all other token related info
     session["token_info"] = token_info
-    print(session)
 
-    print("AAAAAAAAAAAAAAAAAAAA /n AAAAAA \n \n\n\n\n AAAAAAAAAAAA")
-    return redirect("http://127.0.0.1:3000/home")
+    # print("AAAAAAAAAAAAAAAAAAAA /n AAAAAA \n \n\n\n\n AAAAAAAAAAAA")
+    res = make_response(redirect("http://127.0.0.1:3000/home"))
+    res.set_cookie('token', token_info["access_token"])
+    res.set_cookie('toke', "asd")
+    return res
 
-# Use the access token to access the Spotify Web API;
-# Spotify returns requested data
 
 @app.route("/go", methods=['POST'])
 def go():
-    print(session, "ASDSADASDASD\nn\n\n\\n\n\\n\nasdadasdasdasdsa")
-    session['token_info'], authorized = get_token(session)
-    session.modified = True
-    if not authorized:
-        return redirect('http://127.0.0.1:5000/login')
-    data = request.form
-    sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
-    response = sp.current_user_top_tracks(
-        limit=data['num_tracks'], time_range=data['time_range'])
+    a = request.cookies.get('token')
+    print(a, "\nlol\n", request.cookies.get('toke'))
+    # session['token_info'], authorized = get_token(session)
+    # session.modified = True
+    # if not authorized:
+    #     return redirect('http://127.0.0.1:5000/login')
+    # data = request.form
+    # sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
+    # response = sp.current_user_top_tracks(
+    #     limit=data['num_tracks'], time_range=data['time_range'])
 
-    print(json.dumps(response))
+    # print(json.dumps(response))
 
-    return {data}
+    return {"a": "data"}
 
 # Checks to see if token is valid and gets a new token if not
 
 
 def get_token(session):
-    print(session, "\n\n\n\n\n\n\n asdasdasdasdasd")
     token_valid = False
     token_info = session.get("token_info", {})
 
@@ -115,3 +107,11 @@ def get_token(session):
 
     token_valid = True
     return token_info, token_valid
+
+
+api.add_resource(HelloApiHandler, '/flask/hello')
+api.add_resource(ConcertListHandler, '/flask/concerts')
+api.add_resource(ArtistListHandler, '/flask/artists')
+api.add_resource(ConcertInformationHandler, '/flask/concertinfo')
+api.add_resource(SearchHandler, '/flask/search')
+api.add_resource(ConcertsOfArtistHandler, '/flask/artistconcerts')
