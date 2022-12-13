@@ -1,4 +1,4 @@
-from datacollection import getPopularity, getPopulation
+from backend.datacollection import getPopularity, getPopulation
 import requests
 from bs4 import BeautifulSoup
 import requests

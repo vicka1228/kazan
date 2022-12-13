@@ -6,7 +6,7 @@ import json
 import time
 from flask_restful import Api, Resource, reqparse
 from flask_cors import CORS  # comment this on deployment
-from api.ApiHandler import HelloApiHandler, ConcertListHandler, ArtistListHandler, ConcertInformationHandler, SearchHandler, ConcertsOfArtistHandler, ArtistImageHandler, ConcertImageHandler  # add all components
+from api.ApiHandler import HelloApiHandler, ConcertListHandler, ArtistListHandler, ConcertInformationHandler, SearchHandler, ConcertsOfArtistHandler, ArtistImageHandler, ConcertImageHandler, PredictionResult  # add all components
 
 app = Flask(__name__, static_url_path='', static_folder='front-end/public')
 app.secret_key = "46f709ffe6d9434482efe31d30098684"
@@ -118,3 +118,4 @@ api.add_resource(SearchHandler, '/flask/search')
 api.add_resource(ConcertsOfArtistHandler, '/flask/artistconcerts')
 api.add_resource(ArtistImageHandler, '/flask/artistimage')
 api.add_resource(ConcertImageHandler, '/flask/concertimage')
+api.add_resource(PredictionResult, '/flask/prediction')
