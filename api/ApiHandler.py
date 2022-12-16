@@ -131,6 +131,20 @@ def getConcertData(eventId):
 
         return show
 
+
+def getTopNArtists(n):
+    if token:
+        sp = spotipy.Spotify(auth = token)
+        top_artists = sp.current_user_top_artists(limit = n, time_range = "medium_term")
+    else:
+        print("Can't get token!")
+    
+    artists=[]
+    # user's top artists in the past 6 months
+    for artist in top_artists["items"]:
+        artists.append(artist["name"])
+    return artists
+
 class HelloApiHandler(Resource):
     def get(self):
         print("I am reaching the request")
@@ -169,23 +183,25 @@ class HelloApiHandler(Resource):
 
 class ConcertListHandler(Resource):
 
-    # def save_to_DF(csv_file):
-    #     return pd.read_csv(csv_file)
-
-    # def save_to_SQL(df):
-    #     c = conn.cursor()
-    #     c.execute('CREATE TABLE IF NOT EXISTS ' + TABLE +
-    #               ' (artist_name text, min_price number)')
-    #     conn.commit()
-    #     df.to_sql(TABLE, conn, if_exists='replace', index=False)
-
-    # df = save_to_DF('./data.csv')
-    # save_to_SQL(df)
-
     def get(self):
         print("I am reaching the request")
-        concerts = pd.read_sql_query(
-            "SELECT * FROM " + TABLE, conn).to_json(orient="records")
+        # concerts = pd.read_sql_query(
+        #     "SELECT * FROM " + TABLE, conn).to_json(orient="records")
+        artists = getTopNArtists(10)
+        for artist in artists:
+            link = 'https://app.ticketmaster.com/discovery/v2/events.json?size=20&keyword=' + artist + '&sort=relevance,desc&apikey=sPYngrqc3a29GkMAd2SOBDuPm7VdHT9o'
+            jsonresponse = requests.get(link).json()
+            events = []
+
+            for i in range(0, len(jsonresponse['_embedded']['events'])):
+                print(i)
+                event   = jsonresponse['_embedded']['events'][i]
+                show    = getConcertData(event['id'])
+                if (not "name" in show):
+                    continue
+                events.append(show)
+
+        concerts = events.to_json()
         return {
             'resultStatus': 'SUCCESS',
             'message': "Concert List Handler",
@@ -196,8 +212,9 @@ class ConcertListHandler(Resource):
 class ArtistListHandler(Resource):
     def get(self):
         print("I am reaching the request")
-        artists = json.dumps((pd.read_sql_query(
-            "SELECT artist FROM " + TABLE, conn).artist.unique()).tolist())
+        # artists = json.dumps((pd.read_sql_query(
+        #     "SELECT artist FROM " + TABLE, conn).artist.unique()).tolist())
+        artists = json.dumps(getTopNArtists(10))
         return {
             'resultStatus': 'SUCCESS',
             'message': "Artist List Handler",
