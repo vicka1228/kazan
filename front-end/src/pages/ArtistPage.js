@@ -16,11 +16,11 @@ export const ArtistPage = () => {
   const [getConcertsOfArtist, setGetConcertsofArtist] = useState({});
   let artist = id; //have to accept from user
   let req = {
-    artist: artist,
+    'artist': artist
   };
   useEffect(() => {
     axios
-      .post("http://127.0.0.1:5000/flask/artistconcerts", req)
+      .post("http://127.0.0.1:8080/flask/artistconcerts", req)
       .then((response) => {
         console.log("SUCCESS", response);
         setGetConcertsofArtist(response.data);
@@ -29,17 +29,34 @@ export const ArtistPage = () => {
         console.log(error);
       });
   }, []);
+
+  const [getImageOfArtist, setGetImageofArtist] = useState({});
+  
+  useEffect(() => {
+    axios
+      .post("http://127.0.0.1:8080/flask/artistimage", req)
+      .then((response) => {
+        console.log("SUCCESS", response);
+        setGetImageofArtist(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
   return (
     <>
       <Sidebar />
       <div className={styles.artist_page}>
         <div className={styles.artist_banner}>
-          <img src="https://connorgroup.com/static/4bb1b295ecca0123d20cd18be8066649/cd40e/Concerts_near_San_Antonio-scaled.jpg"></img>
-          <p>The Weeknd</p>
+          {/* <img src="https://connorgroup.com/static/4bb1b295ecca0123d20cd18be8066649/cd40e/Concerts_near_San_Antonio-scaled.jpg"></img>
+          <p>The Weeknd</p> */}
+          <img src={getImageOfArtist.imageURL}></img>
+          <p>{artist}</p>
         </div>
         <div className={styles.container}>
           <div className={styles.artist_concerts}>
-            {concerts.map((value) => (
+            {getConcertsOfArtist.concerts.map((value) => (
               <ConcertCard props={value} key={value.key} />
             ))}
           </div>
